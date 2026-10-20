@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>達人秀結算簿</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="desk">
+    <header class="top">
+      <div>
+        <p class="eyebrow"><a href="https://www.youtube.com/@EBCmoneyshow" target="_blank" rel="noopener">理財達人秀</a> · 紙上交易</p>
+        <h1>提到就買，漲 10% 就賣</h1>
+        <p class="lede">從 10 月 1 日播出的那集開始算。點到名的股票各買 5,000 元，之後不管過幾天，收盤價漲滿進場價的 10% 就賣。還沒漲到的繼續持有。</p>
+      </div>
+      <div class="top-actions">
+        <p id="sync-state">準備中</p>
+        <button id="sync-btn" type="button">更新節目</button>
+      </div>
+    </header>
+
+    <ol class="rules">
+      <li>
+        <span>01</span>
+        <p>只算週一到週五的【電視完整版】。同日的分段和有點名的短影音會併進那一集。頻道沒開字幕，所以從標題、章節和說明認股票。</p>
+      </li>
+      <li>
+        <span>02</span>
+        <p>節目九點才播，當天已經收盤。週一到週三、週五，下一個交易日收盤買進。週四改到週五收盤買進；那天休市就順延到下一個開盤的週五。零股能買幾股就買幾股，一檔 5,000 元。股價超過 5,000 就買不了，這筆不計勝率。</p>
+      </li>
+      <li>
+        <span>03</span>
+        <p>賣出不看週幾，也不設天數。進場之後第一個漲滿 10% 的收盤價就是賣出價。還沒到的不當成失敗，也沒有停損。</p>
+      </li>
+      <li>
+        <span>04</span>
+        <p>另有一本 5 萬元的帳，最多同時持有 10 檔。只買股價 300 元以下、而且不是 ETF 的股票；播出當天收盤還要站上 5 日均線、近 5 日上漲。滿 10 檔或滿 5 萬就停，等其中一檔漲滿 10% 賣出後再補。</p>
+      </li>
+    </ol>
+
+    <section class="leaders" id="sleeve"></section>
+    <section class="hero" id="hero"></section>
+    <section class="leaders" id="leaders"></section>
+    <div class="weeks" id="weeks"></div>
+    <section class="panel" id="panel"></section>
+
+    <footer>
+      <p>紅字是賺錢，綠字是賠錢，跟台股報價同一個方向。達標率是已經漲滿 10% 的筆數，除以已經買到的筆數；還沒到的留在分母，不算輸。這是記帳，不是明牌，也不構成投資建議。</p>
+    </footer>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

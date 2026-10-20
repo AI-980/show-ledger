@@ -1,0 +1,34 @@
+name: sync
+
+on:
+  schedule:
+    # 22:30 and 23:30 Taipei, Monday–Friday: the 21:00 episode.
+    - cron: "30 14 * * 1-5"
+    - cron: "30 15 * * 1-5"
+    # 14:00 and 16:00 Taipei: the session has closed, so take-profit can update.
+    - cron: "0 6 * * 1-5"
+    - cron: "0 8 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: python -m app.cloud
+      - name: Save the ledger
+        run: |
+          git add -f data/show.db
+          if git diff --cached --quiet; then
+            echo "ledger unchanged"
+            exit 0
+          fi
+          git -c user.name="ledger" -c user.email="ledger@users.noreply.github.com" commit -m "更新節目與收盤"
+          git push
