@@ -22,6 +22,7 @@ const BADGE = {
 let data = null;
 let selected = null;
 let timer = null;
+let readOnly = false;
 
 function pct(value) {
   if (value == null || Number.isNaN(value)) return "—";
@@ -56,13 +57,24 @@ function cell(text, className) {
 }
 
 async function load() {
-  const response = await fetch("/api/dashboard", { cache: "no-store" });
+  let response;
+  try {
+    response = await fetch("/api/dashboard", { cache: "no-store" });
+    if (!response.ok) throw new Error(String(response.status));
+    readOnly = false;
+  } catch {
+    response = await fetch("dashboard.json", { cache: "no-store" });
+    readOnly = true;
+  }
   data = await response.json();
   const sync = data.sync || {};
   const when = data.syncedAt ? ` · ${data.syncedAt.replace("T", " ").replace(/[+-]\d{2}:\d{2}$/, "")}` : "";
-  syncState.textContent = `${sync.message || "待命"}${when}`;
+  syncBtn.hidden = readOnly;
+  syncState.textContent = readOnly
+    ? `雲端帳本${when}`
+    : `${sync.message || "待命"}${when}`;
   syncBtn.disabled = Boolean(sync.running);
-  if (sync.error) syncState.textContent = `更新失敗：${sync.error}`;
+  if (sync.error && !readOnly) syncState.textContent = `更新失敗：${sync.error}`;
   render();
   const waiting = sync.running || (data.summary.episodes === 0 && !sync.error);
   clearTimeout(timer);
@@ -497,6 +509,10 @@ function renderEpisode(episode) {
     chips.append(empty);
   }
   episode.trades.forEach((trade) => chips.append(chip(episode.videoId, trade)));
+  if (readOnly) {
+    card.append(heading, meta, chips);
+    return card;
+  }
   const form = document.createElement("form");
   form.className = "add";
   const input = document.createElement("input");
@@ -561,6 +577,10 @@ function chip(videoId, trade) {
   const label = document.createElement("span");
   label.textContent = `${trade.name} ${signed(trade.pnl)}`;
   if (trade.state === "settled" || trade.state === "open") label.className = tone(trade.pnl);
+  if (readOnly) {
+    item.append(label);
+    return item;
+  }
   const remove = document.createElement("button");
   remove.type = "button";
   remove.className = "ghost";
